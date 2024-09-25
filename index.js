@@ -22,9 +22,9 @@ const port = process.env.PORT;
 const database = require("./config/database");
 database.conect();
 
-app.set('views', `${__dirname}./views`);
+app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
-app.use(express.static(`${__dirname}public`));
+app.use(express.static(`${__dirname}/public`));
 
 const systemConfig = require("./config/system");
 
