@@ -38,13 +38,22 @@ module.exports.index = async (req, res) => {
     const skip = (page - 1) * limitItems;
     //Hết Phân trang 
 
+    const sort = {};
+
+    if(req.query.sortKey && req.query.sortValue) {
+      const sortKey = req.query.sortKey;
+      const sortValue = req.query.sortValue;
+
+      sort[sortKey] = sortValue;
+    } else {
+      sort["position"] = "desc";
+    }
+
     const products = await Product
     .find(find)
     .limit(limitItems)
     .skip(skip)
-    .sort({
-      position: "desc"
-    });
+    .sort(sort);
 
     res.render("admin/pages/products/index", {
         title: "Trang product",
@@ -156,10 +165,6 @@ module.exports.createPost = async (req, res) => {
     req.body.position = countProduct + 1;
   }
 
-  if(req.file) {
-    req.body.thumbnail = `/uploads/${req.file.filename}`;
-  }
-
   // console.log(req.file);
   // console.log(req.body);
 
@@ -191,10 +196,6 @@ module.exports.editPatch = async (req, res) => {
 
   if(req.body.position) {
     req.body.position = parseInt(req.body.position);
-  }
-
-  if(req.file) {
-    req.body.thumbnail = `/uploads/${req.file.filename}`;
   }
 
   await Product.updateOne({

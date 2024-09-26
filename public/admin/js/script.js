@@ -234,3 +234,32 @@ if(inputUploadImage) {
 }
 //Hết Hiển thị ảnh demo 
 
+// Bộ lọc
+const sortSelect = document.querySelector("[sort-select]");
+
+if(sortSelect) {
+    let url = new URL(location.href);
+
+    sortSelect.addEventListener("change", () => {
+        const value = sortSelect.value;
+
+        if(value) {
+            const [sortKey, sortValue] = value.split("-");
+            url.searchParams.set("sortKey", sortKey);
+            url.searchParams.set("sortValue", sortValue);
+        } else {
+            url.searchParams.delete("sortKey");
+            url.searchParams.delete("sortValue");
+        }
+
+        location.href = url.href;
+    })
+
+    const statusSortKey = url.searchParams.get("sortKey");
+    const statusSortValue = url.searchParams.get("sortValue");
+    if(statusSortKey && statusSortValue) {
+        sortSelect.value = `${statusSortKey}-${statusSortValue}`;
+    }
+}
+//Hết Bộ lọc
+
