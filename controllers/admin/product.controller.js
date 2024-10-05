@@ -1,5 +1,6 @@
 const Product = require("../../models/product.model");
 const systemConfig = require("../../config/system");
+const ProductCategory = require("../../models/product-category.model");
 
 module.exports.index = async (req, res) => {
     const find = {
@@ -59,7 +60,8 @@ module.exports.index = async (req, res) => {
         title: "Trang product",
         products: products,
         totalPage: totalPages,
-        currentPage: page
+        currentPage: page,
+        limitItems: limitItems
     })
 };
 
@@ -148,29 +150,35 @@ module.exports.changePosition = async (req, res) => {
 };
 
 module.exports.create = async (req, res) => {
+
+  const listCategory = await ProductCategory.find({
+    deleted: false
+  });
+
   res.render("admin/pages/products/create", {
-    title : "Thêm mới sản phẩm"
+    title : "Thêm mới sản phẩm",
+    listCategory : listCategory
   })
 };
 
 module.exports.createPost = async (req, res) => {
-  req.body.price = parseInt(req.body.price);
-  req.body.discountPercentage = parseInt(req.body.discountPercentage);
-  req.body.stock = parseInt(req.body.stock);
-  
-  if(req.body.position) {
-    req.body.position = parseInt(req.body.position);
-  } else {
-    const countProduct = await Product.countDocuments();
-    req.body.position = countProduct + 1;
+  if(res.locals.role.permissions.includes("products_create")) {
+    req.body.price = parseInt(req.body.price);
+    req.body.discountPercentage = parseInt(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock);
+    
+    if(req.body.position) {
+      req.body.position = parseInt(req.body.position);
+    } else {
+      const countProduct = await Product.countDocuments();
+      req.body.position = countProduct + 1;
+    }
+
+    const record = new Product(req.body);
+    await record.save();
+    res.redirect(`/${systemConfig.prefixAdmin}/products`);
   }
-
-  // console.log(req.file);
-  // console.log(req.body);
-
-  const record = new Product(req.body);
-  await record.save();
-  res.redirect(`/${systemConfig.prefixAdmin}/products`);
+  
 };
 
 module.exports.edit = async (req, res) => {
@@ -181,44 +189,54 @@ module.exports.edit = async (req, res) => {
       deleted: false
     });
 
+  const listCategory = await ProductCategory.find({
+    deleted: false
+  });  
+
   res.render("admin/pages/products/edit", {
     product : product,
-    pageTitile: "Trang edit"
+    pageTitile: "Trang edit",
+    listCategory: listCategory
   });
 };
 
 module.exports.editPatch = async (req, res) => {
-  const id = req.params.id;
+  if(res.locals.role.permissions.includes("products_edit")) {
+    const id = req.params.id;
 
-  req.body.price = parseInt(req.body.price);
-  req.body.discountPercentage = parseInt(req.body.discountPercentage);
-  req.body.stock = parseInt(req.body.stock);
+    req.body.price = parseInt(req.body.price);
+    req.body.discountPercentage = parseInt(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock);
 
-  if(req.body.position) {
-    req.body.position = parseInt(req.body.position);
+    if(req.body.position) {
+      req.body.position = parseInt(req.body.position);
+    }
+
+    await Product.updateOne({
+      _id: id,
+      deleted: false
+    }, req.body);
+
+    req.flash("success", "Cập nhật thành công!");
+    res.redirect("back");
   }
-
-  await Product.updateOne({
-    _id: id,
-    deleted: false
-  }, req.body);
-
-  req.flash("success", "Cập nhật thành công!");
-  res.redirect("back");
+  
 }
 
 module.exports.detail = async (req, res) => {
-  const id = req.params.id;
+  if(res.locals.role.permissions.includes("products_view")) {
+    const id = req.params.id;
 
-  const product = await Product.findOne({
-    _id: id,
-    deleted: false
-  });
+    const product = await Product.findOne({
+      _id: id,
+      deleted: false
+    });
 
-  res.render("admin/pages/products/detail", {
-    pageTitle: "Chi tiết sản phẩm",
-    product: product
-  });
+    res.render("admin/pages/products/detail", {
+      pageTitle: "Chi tiết sản phẩm",
+      product: product
+    });
+  }
 }  
 
 

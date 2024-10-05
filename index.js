@@ -6,6 +6,8 @@ const flash = require('express-flash');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
+const path = require('path');
+
 const methodOverride = require('method-override');
 // override with POST having ?_method=DELETE
 app.use(methodOverride('_method'));
@@ -25,6 +27,7 @@ database.conect();
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
 app.use(express.static(`${__dirname}/public`));
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
 const systemConfig = require("./config/system");
 
