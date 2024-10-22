@@ -1,27 +1,29 @@
 extends ../../layouts/default.pug
 include ../../mixins/boxhead.pug
+include ../../mixins/product-item.pug
 
 block main 
   .container.my-3
-    +box-head("Danh sách sản phẩm")
-
+    +box-head("Sản phẩm nổi bật")
     .row
-      .col-6.mb-3
-        .product-item
-          .inner-image
-            img(src="https://cdn.dummyjson.com/product-images/1/thumbnail.jpg", alt="iPhone 9")
-          .inner-content
-            h3.inner-title iPhone 9
-            .inner-price-new 80$
-            .inner-price-old 100$
-            .inner-discount -20%
-      .col-6.mb-3
-        .product-item
-          .inner-image
-            img(src="https://cdn.dummyjson.com/product-images/1/thumbnail.jpg", alt="iPhone 9")
-          .inner-content
-            h3.inner-title iPhone 9
-            .inner-price-new 80$
-            .inner-price-old 100$
-            .inner-discount -20%
-          
+      each item in productsFeatured
+        +product-item(item)
+  
+  
+  .container.my-3
+    +box-head("Sản phẩm mới")
+    .row
+      each item in productsNew
+        +product-item(item)
+  
+  .container.my-3
+    +box-head("Giảm giá nhiều")
+    .row
+      each item in productsDiscount
+        +product-item(item)
+  
+  .container.my-3
+    +box-head("Sản phẩm gợi ý")
+    .row
+      each item in productsChoose
+        +product-item(item)
