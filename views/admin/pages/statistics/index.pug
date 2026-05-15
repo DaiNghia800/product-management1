@@ -1,0 +1,15 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-filter.pug
+
+block main
+  if (pageTitle)
+    h1(class="mb-4") #{pageTitle}
+  if(sumViewers) 
+    h2 #{sumViewers}  
+  each item in sumViewers
+    if (item.page)
+        div #{item.page}
+    if (item.Country)
+        div #{item.Country}
+    if (item.City)
+        div #{item.City}

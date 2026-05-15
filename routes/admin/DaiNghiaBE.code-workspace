@@ -1,0 +1,52 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../ProjectMP3"
+		},
+		{
+			"path": "../../../../DownloadTMP/DaiNghiaFE"
+		},
+		{
+			"path": "../../../../ProjectHalago"
+		},
+		{
+			"path": "C:/Users/ADMIN/Downloads/Bai-6"
+		},
+		{
+			"path": "../../../../DownloadTMP/Projects"
+		},
+		{
+			"path": "../../../../MyProjectMain"
+		},
+		{
+			"path": "../../../../StudyExpress"
+		},
+		{
+			"path": "C:/Users/ADMIN/Downloads/BTBuoi2"
+		},
+		{
+			"path": "C:/Users/ADMIN/Downloads/6451071050_BuiDaiNghia"
+		},
+		{
+			"path": "../../../../my-lms"
+		},
+		{
+			"path": "../../../../newblockchain"
+		},
+		{
+			"path": "../../../../my_first_contract"
+		},
+		{
+			"path": "../../../../Study move"
+		},
+		{
+			"path": "../../../../fastkart-backend"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "vehicles"
+	}
+}

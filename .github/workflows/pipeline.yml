@@ -1,0 +1,54 @@
+name: CI/CD Production Pipeline
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # JOB 1: KIỂM ĐỊNH CHẤT LƯỢNG (CI QUALITY GATE)
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20] # Test song song trên Node 18 và 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '${{matrix.node}}'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test
+      # Quét lỗ hổng bảo mật (Bắt buộc theo chuẩn Production)
+      - run: npm audit --audit-level=high 
+
+  # JOB 2: ĐÓNG GÓI & ĐẨY LÊN KHO GHCR (BUILD & PUSH)
+  build-push:
+    needs: [test] # Test phải PASS thì mới được chạy Job này
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: docker/setup-buildx-action@v3
+      
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
