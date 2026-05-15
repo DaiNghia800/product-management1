@@ -21,9 +21,9 @@ jobs:
       # Quét lỗ hổng bảo mật (Bắt buộc theo chuẩn Production)
       - run: npm audit --audit-level=high 
 
-  # JOB 2: ĐÓNG GÓI & ĐẨY LÊN KHO GHCR (BUILD & PUSH)
+# JOB 2: ĐÓNG GÓI & ĐẨY LÊN KHO GHCR VỚI MÃ SHA CHUẨN
   build-push:
-    needs: [test] # Test phải PASS thì mới được chạy Job này
+    needs: [test]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -40,15 +40,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           
-      - id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository }}
-          
       - uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
