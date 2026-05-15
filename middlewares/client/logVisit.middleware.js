@@ -1,20 +1,15 @@
-const  Visit  = require('../../models/views-visit.model');
+const Visit = require('../../models/views-visit.model');
 const axios = require('axios');
 
 const logVisit = async (req, res, next) => {
   try {
 
     if (req.originalUrl === '/favicon.ico') {
-        return next();
+      return next();
     }
-    let infoData;
-    const responsee = await axios.get(`http://ip-api.com/json/171.252.188.130`)
-        .then(response => {
-            infoData = response.data;
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
+
+    const response = await axios.get('http://ip-api.com/json/171.252.188.130');
+    const infoData = response.data;
 
     const visit = new Visit({
       ip: req.ip,
@@ -22,11 +17,13 @@ const logVisit = async (req, res, next) => {
       Country: infoData.country,
       City: infoData.city
     });
+
     await visit.save();
-    
+
   } catch (error) {
     console.error('Error logging visit:', error.message);
   }
+
   next();
 };
 

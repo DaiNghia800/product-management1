@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon --inspect index.js",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +33,9 @@
     "tinymce": "^7.3.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.4.0",
+    "globals": "^17.6.0",
     "jest": "^30.4.2",
     "nodemon": "^3.1.4",
     "supertest": "^7.2.2"

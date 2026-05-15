@@ -57,6 +57,7 @@ jobs:
   update-manifest:
     needs: [build-push]
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
         with:
