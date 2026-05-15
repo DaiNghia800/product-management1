@@ -17,6 +17,8 @@ jobs:
           node-version: '${{matrix.node}}'
           cache: 'npm'
       - run: npm ci
+      - run: npm run lint  
+      - run: npm run build
       - run: npm test
       # Quét lỗ hổng bảo mật (Bắt buộc theo chuẩn Production)
       - run: npm audit --audit-level=high 
@@ -73,3 +75,18 @@ jobs:
           git add .
           git commit -m "chore: update image tag to ${{ github.sha }} [skip ci]"
           git push origin master        
+
+  notify:
+    needs: [update-manifest]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🚀 Deploy Successfull!
+            Repo: ${{ github.repository }}
+            Commit: ${{ github.sha }}
+            Status: GitOps updated and rolling update is in progress on Kubernetes.       
