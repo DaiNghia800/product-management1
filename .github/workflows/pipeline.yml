@@ -61,6 +61,7 @@ jobs:
           repository: 'DaiNghia800/product-management-gitops' 
           token: ${{ secrets.GITOPS_TOKEN }}
           path: 'gitops-repo'
+          ref: 'master'
 
       - name: Update Image Tag in values.yaml
         run: |
